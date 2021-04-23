@@ -66,7 +66,6 @@ loadAppConfig()
         let newBundlePath;
         const listOfFoldersAndFiles = foldersAndFiles(currentAppName, newName);
         const listOfFilesToModifyContent = filesToModifyContent(currentAppName, newName, projectName);
-
         if (bundleID) {
           newBundlePath = bundleID.replace(/\./g, '/');
           const id = bundleID.split('.');
