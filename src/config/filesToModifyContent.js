@@ -2,8 +2,10 @@
 // lC - Lowercase
 
 export function filesToModifyContent(currentAppName, newName) {
-  const nS_CurrentAppName = currentAppName.replace(/\s/g, '');
-  const nS_NewName = newName.replace(/\s/g, '');
+  const nS_CurrentAppName = currentAppName;
+  const nS_NewName = newName;
+
+  console.log('CurrentAppName: ', nS_CurrentAppName, nS_NewName);
 
   return [
     {
