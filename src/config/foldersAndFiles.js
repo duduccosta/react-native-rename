@@ -2,6 +2,7 @@
 // lC - Lowercase
 
 export function foldersAndFiles(currentAppName, newName) {
+  currentAppName = currentAppName.replace(' do Só', 'So');
   const nS_CurrentAppName = currentAppName.replace(/\s/g, '');
   const nS_NewName = newName.replace(/\s/g, '');
 
