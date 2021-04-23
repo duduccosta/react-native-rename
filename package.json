@@ -1,6 +1,6 @@
 {
-  "name": "react-native-rename",
-  "version": "2.8.1",
+  "name": "react-native-rename2",
+  "version": "2.8.3",
   "description": "Rename react-native app with just one command",
   "main": "lib/index.js",
   "scripts": {
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/junedomingo/react-native-rename.git"
+    "url": "git+https://github.com/duduccosta/react-native-rename.git"
   },
   "keywords": [
     "react-native",
@@ -35,12 +35,12 @@
   "author": "June Domingo <junedomingo@gmail.com>",
   "license": "MIT",
   "bin": {
-    "react-native-rename": "lib/index.js"
+    "react-native-rename2": "lib/index.js"
   },
   "bugs": {
-    "url": "https://github.com/junedomingo/react-native-rename/issues"
+    "url": "https://github.com/duduccosta/react-native-rename/issues"
   },
-  "homepage": "https://github.com/junedomingo/react-native-rename#readme",
+  "homepage": "https://github.com/duduccosta/react-native-rename#readme",
   "dependencies": {
     "cheerio": "^0.22.0",
     "colors": "^1.1.2",

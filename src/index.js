@@ -13,7 +13,7 @@ import path from 'path';
 import { foldersAndFiles } from './config/foldersAndFiles';
 import { filesToModifyContent } from './config/filesToModifyContent';
 import { bundleIdentifiers } from './config/bundleIdentifiers';
-import { loadAppConfig, loadAndroidManifest, __dirname, iosRequiredPaths } from './utils'
+import { loadAppConfig, loadAndroidManifest, __dirname, iosRequiredPaths } from './utils';
 
 const androidEnvs = ['main', 'debug'];
 const projectName = pjson.name;
@@ -58,7 +58,7 @@ loadAppConfig()
       .version(projectVersion)
       .arguments('[newName]')
       .option('-b, --bundleID [value]', 'Set custom bundle identifier eg. "com.junedomingo.travelapp"')
-      .action((argName) => {
+      .action(argName => {
         const newName = argName || currentAppName;
         const nS_NewName = newName.replace(/\s/g, '');
         const pattern = /^([\p{Letter}\p{Number}])+([\p{Letter}\p{Number}\s]+)$/u;
@@ -77,7 +77,9 @@ loadAppConfig()
             );
           }
           if (!validBundleID.test(bundleID)) {
-            return console.log('Invalid Bundle Identifier. It must have at least two segments (one or more dots). Each segment must start with a letter. All characters must be alphanumeric or an underscore [a-zA-Z0-9_]')
+            return console.log(
+              'Invalid Bundle Identifier. It must have at least two segments (one or more dots). Each segment must start with a letter. All characters must be alphanumeric or an underscore [a-zA-Z0-9_]'
+            );
           }
         }
 
@@ -87,21 +89,26 @@ loadAppConfig()
           );
         }
 
-        const validatePaths = () => new Promise((resolve, reject) => {
-          const paths = iosRequiredPaths(currentAppName);
+        const validatePaths = () =>
+          new Promise((resolve, reject) => {
+            const paths = iosRequiredPaths(currentAppName);
 
-          paths.forEach((item) => {
-            if (!fs.existsSync(path.join(__dirname, item))) {
-              reject(new Error(`Can't find an ios path or project. Make sure that the ios project path and property 'name' in app.json the same.`));
-            }
+            paths.forEach(item => {
+              if (!fs.existsSync(path.join(__dirname, item))) {
+                reject(
+                  new Error(
+                    `Can't find an ios path or project. Make sure that the ios project path and property 'name' in app.json the same.`
+                  )
+                );
+              }
+            });
+
+            resolve();
           });
-
-          resolve();
-        });
 
         // Move files and folders from ./config/foldersAndFiles.js
         const resolveFoldersAndFiles = () => {
-          const promises = listOfFoldersAndFiles.map((element) => {
+          const promises = listOfFoldersAndFiles.map(element => {
             const dest = element.replace(new RegExp(nS_CurrentAppName, 'i'), nS_NewName);
 
             const successMsg = `/${dest} ${colors.green('RENAMED')}`;
@@ -109,9 +116,7 @@ loadAppConfig()
             const src = path.join(__dirname, element);
             const dst = path.join(__dirname, dest);
 
-            const move = shell.exec(
-              `git mv -k "${src}" "${dst}"`
-            );
+            const move = shell.exec(`git mv -k "${src}" "${dst}"`);
 
             if (move.code === 0) {
               console.log(successMsg);
@@ -162,18 +167,25 @@ loadAppConfig()
             projectName,
             currentBundleID,
             newBundleID,
-            newBundlePath
-          }).map(file => Promise.all(file.paths.map((filePath) => new Promise(resolve => {
-            const newPaths = [];
-            if (fs.existsSync(path.join(__dirname, filePath))) {
-              newPaths.push(path.join(__dirname, filePath));
-              replaceContent(file.regex, file.replacement, newPaths);
-            }
-            resolve();
-          }))));
+            newBundlePath,
+          }).map(file =>
+            Promise.all(
+              file.paths.map(
+                filePath =>
+                  new Promise(resolve => {
+                    const newPaths = [];
+                    if (fs.existsSync(path.join(__dirname, filePath))) {
+                      newPaths.push(path.join(__dirname, filePath));
+                      replaceContent(file.regex, file.replacement, newPaths);
+                    }
+                    resolve();
+                  })
+              )
+            )
+          );
 
           return Promise.all(promises);
-        }
+        };
 
         const resolveJavaFiles = () =>
           new Promise(resolve => {
@@ -181,8 +193,7 @@ loadAppConfig()
               const currentBundleID = $data('manifest').attr('package');
               const newBundleID = program.bundleID ? bundleID : currentBundleID;
 
-              const promises = androidEnvs.map(env => {
-                return new Promise(envResolve => {
+              const promises = androidEnvs.map(env => new Promise(envResolve => {
                   const javaFileBase = `android/app/src/${env}/java`;
 
                   const newJavaPath = `${javaFileBase}/${newBundleID.replace(/\./g, '/')}`;
@@ -204,14 +215,14 @@ loadAppConfig()
                   const gitMove = shell.exec(`git mv "${fullCurrentBundlePath}/"* "${fullNewBundlePath}"`);
                   const successMsg = `${newBundlePath} ${colors.green('BUNDLE IDENTIFIER CHANGED')}`;
 
+                  console.log('git mv code: ', gitMove.code);
                   if (gitMove.code === 0) {
-                    console.log(successMsg);
+                    console.log('git mv: ', successMsg);
                   } else {
                     const shellMove = shell.mv('-f', fullCurrentBundlePath + '/*', fullNewBundlePath);
                     // if "outside repository" error occured
                     if (shellMove.code === 0) {
-                      console.log(successMsg);
-
+                      console.log('shell mv: ', successMsg);
                     } else {
                       console.log(`Error moving: "${currentJavaPath}" "${newBundlePath}"`);
                     }
@@ -231,36 +242,36 @@ loadAppConfig()
                   };
 
                   return resolveBundleIdentifiers(vars).then(envResolve);
-                })
-              })
+                }));
 
               return Promise.all(promises).then(resolve);
             });
           });
 
-        const run = () => Promise.resolve()
-          .then(validatePaths)
-          .then(resolveFoldersAndFiles)
-          .then(resolveFilesToModifyContent)
-          .then(resolveJavaFiles)
-          .then(cleanBuilds)
-          .then(() => console.log(`APP SUCCESSFULLY RENAMED TO "${newName}"! 🎉 🎉 🎉`.green))
-          .then(() => {
-            if (fs.existsSync(path.join(__dirname, 'ios', 'Podfile'))) {
+        const run = () =>
+          Promise.resolve()
+            .then(validatePaths)
+            .then(resolveFoldersAndFiles)
+            .then(resolveFilesToModifyContent)
+            .then(resolveJavaFiles)
+            .then(cleanBuilds)
+            .then(() => console.log(`APP SUCCESSFULLY RENAMED TO "${newName}"! 🎉 🎉 🎉`.green))
+            .then(() => {
+              if (fs.existsSync(path.join(__dirname, 'ios', 'Podfile'))) {
+                console.log(
+                  `${colors.yellow('Podfile has been modified, please run "pod install" inside ios directory.')}`
+                );
+              }
+            })
+            .then(() =>
               console.log(
-                `${colors.yellow('Podfile has been modified, please run "pod install" inside ios directory.')}`
-              );
-            }
-          })
-          .then(() =>
-            console.log(
-              `${colors.yellow(
-                'Please make sure to run "watchman watch-del-all" and "npm start --reset-cache" before running the app.'
-              )}`
-            )
-          );
+                `${colors.yellow(
+                  'Please make sure to run "watchman watch-del-all" and "npm start --reset-cache" before running the app.'
+                )}`
+              )
+            );
 
-        return run().catch((error) => {
+        return run().catch(error => {
           console.log(colors.red(error));
         });
       })
