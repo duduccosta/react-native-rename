@@ -201,12 +201,12 @@ loadAppConfig()
 
                   shell.mkdir('-p', fullNewBundlePath);
 
-                  const gitMove = shell.exec(`git mv -k "${fullCurrentBundlePath}/"* "${fullNewBundlePath}"`);
+                  const gitMove = shell.exec(`git mv "${fullCurrentBundlePath}/"* "${fullNewBundlePath}"`);
                   const successMsg = `${newBundlePath} ${colors.green('BUNDLE IDENTIFIER CHANGED')}`;
 
                   if (gitMove.code === 0) {
                     console.log(successMsg);
-                  } else if (gitMove.code === 128) {
+                  } else {
                     const shellMove = shell.mv('-f', fullCurrentBundlePath + '/*', fullNewBundlePath);
                     // if "outside repository" error occured
                     if (shellMove.code === 0) {
