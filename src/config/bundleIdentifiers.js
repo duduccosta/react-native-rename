@@ -3,7 +3,6 @@
 import globby from 'globby';
 
 export function bundleIdentifiers({ currentAppName, newName, currentBundleID, newBundleID, newBundlePath }) {
-  currentAppName = 'App do Sócio';
   const nS_CurrentAppName = currentAppName.replace(/\s/g, '');
   const nS_NewName = newName.replace(/\s/g, '');
 

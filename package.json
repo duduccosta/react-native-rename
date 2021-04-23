@@ -1,6 +1,6 @@
 {
   "name": "react-native-rename2",
-  "version": "2.8.13",
+  "version": "2.8.14",
   "description": "Rename react-native app with just one command",
   "main": "lib/index.js",
   "scripts": {

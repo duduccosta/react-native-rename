@@ -3,7 +3,7 @@
 
 export function filesToModifyContent(currentAppName, newName) {
   currentAppName = 'App do Sócio';
-  const nS_CurrentAppName = currentAppName.replace(/\s/g, '');
+  const nS_CurrentAppName = currentAppName.replace(' do Só', 'So').replace(/\s/g, '');
   const nS_NewName = newName.replace(/\s/g, '');
 
   return [
@@ -14,6 +14,25 @@ export function filesToModifyContent(currentAppName, newName) {
     },
     {
       regex: nS_CurrentAppName,
+      replacement: nS_NewName,
+      paths: [
+        'index.js',
+        'index.android.js',
+        'index.ios.js',
+        `ios/${nS_NewName}.xcodeproj/project.pbxproj`,
+        `ios/${nS_NewName}.xcworkspace/contents.xcworkspacedata`,
+        `ios/${nS_NewName}.xcodeproj/xcshareddata/xcschemes/${nS_NewName}-tvOS.xcscheme`,
+        `ios/${nS_NewName}.xcodeproj/xcshareddata/xcschemes/${nS_NewName}.xcscheme`,
+        `ios/${nS_NewName}/AppDelegate.m`,
+        'android/settings.gradle',
+        `ios/${nS_NewName}Tests/${nS_NewName}Tests.m`,
+        'ios/build/info.plist',
+        'ios/Podfile',
+        'app.json',
+      ],
+    },
+    {
+      regex: currentAppName,
       replacement: nS_NewName,
       paths: [
         'index.js',
