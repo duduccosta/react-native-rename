@@ -66,7 +66,7 @@ loadAppConfig()
         let newBundlePath;
         const listOfFoldersAndFiles = foldersAndFiles(currentAppName, newName);
         const listOfFilesToModifyContent = filesToModifyContent(currentAppName, newName, projectName);
-        console.log('listOfFilesToModifyContent', listOfFilesToModifyContent);
+
         if (bundleID) {
           newBundlePath = bundleID.replace(/\./g, '/');
           const id = bundleID.split('.');
@@ -143,6 +143,7 @@ loadAppConfig()
 
               file.paths.map((filePath, index) => {
                 const newPaths = [];
+
                 setTimeout(() => {
                   itemsProcessed++;
                   if (fs.existsSync(path.join(__dirname, filePath))) {
