@@ -8,7 +8,7 @@ export function filesToModifyContent(currentAppName, newName) {
 
   return [
     {
-      regex: `<string name="app_name">${currentAppName}</string>`,
+      regex: `<string name="app_name">APP do Sócio</string>`,
       replacement: `<string name="app_name">${newName}</string>`,
       paths: ['android/app/src/main/res/values/strings.xml'],
     },
@@ -31,7 +31,7 @@ export function filesToModifyContent(currentAppName, newName) {
       ],
     },
     {
-      regex: currentAppName,
+      regex: 'App do Sócio',
       replacement: nS_NewName,
       paths: ['app.json'],
     },
